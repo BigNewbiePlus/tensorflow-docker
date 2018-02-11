@@ -40,10 +40,13 @@ RUN apt-get update && apt-get install -yq --no-install-recommends \
     zip \
     zlib1g-dev
 
+# 设置工作目录
+WORKDIR $BASEDIR/
 # anaconda
-RUN mkdir -p $BASEDIR \
-    && curl https://repo.continuum.io/archive/Anaconda2-5.0.1-Linux-x86_64.sh -o $BASEDIR/anaconda.sh \ 
-    && /bin/bash $BASEDIR/anaconda.sh -b -p $BASEDIR/anaconda \
+#RUN mkdir -p $BASEDIR \
+#    && curl https://repo.continuum.io/archive/Anaconda2-5.0.1-Linux-x86_64.sh -o $BASEDIR/anaconda.sh \ 
+ADD Anaconda2-5.0.1-Linux-x86_64.sh anaconda.sh
+RUN  /bin/bash $BASEDIR/anaconda.sh -b -p $BASEDIR/anaconda \
     && rm $BASEDIR/anaconda.sh 
 
 ENV PATH="$BASEDIR/anaconda/bin:${PATH}"
@@ -52,7 +55,6 @@ RUN conda update anaconda && rm -rf /usr/bin/python && ln -s BASEDIR/anaconda/bi
 
 RUN pip install tensorflow \
                 tensorflow-serving-api 
+RUN git clone --depth=1 git://github.com/amix/vimrc.git ~/.vim_runtime && sh ~/.vim_runtime/install_basic_vimrc.sh
 
-# 设置工作目录
-WORKDIR $BASEDIR/
                 
